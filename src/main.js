@@ -1,8 +1,5 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { EffectComposer } from "three/examples/jsm/Addons.js";
-import { RenderPass } from "three/examples/jsm/Addons.js";
-import { UnrealBloomPass } from "three/examples/jsm/Addons.js";
 
 // Scene & Renderer
 const scene = new THREE.Scene();
@@ -16,21 +13,34 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Controls for interaction
+// Controls for interactivity
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 0, 50);
 
-// Nodes & Connections Data
-const numNodes = 100; // Increase for complexity
-const sphereRadius = 30;
+// 🌍 Create the Earth Sphere
+const earthTexture = new THREE.TextureLoader().load("earth.jpg"); // Ensure the image is in the same directory
+const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+scene.add(earth);
+
+// 🌟 Lighting for the Earth
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 5, 5);
+scene.add(ambientLight, directionalLight);
+
+// 🕸 Create Nodes & Connections
+const numNodes = 50;
+const sphereRadius = 20;
+const connectionDistance = 15;
 const nodes = [];
 const edges = [];
 
 // Function to Generate Spherical Coordinates
 function getSpherePosition(radius) {
-  const theta = Math.acos(2 * Math.random() - 1); // Angle from z-axis
-  const phi = Math.random() * 2 * Math.PI; // Angle in xy-plane
-
+  const theta = Math.acos(2 * Math.random() - 1);
+  const phi = Math.random() * 2 * Math.PI;
   return new THREE.Vector3(
     radius * Math.sin(theta) * Math.cos(phi),
     radius * Math.sin(theta) * Math.sin(phi),
@@ -38,8 +48,8 @@ function getSpherePosition(radius) {
   );
 }
 
-// Create Nodes (Spheres)
-const nodeMaterial = new THREE.MeshBasicMaterial({ color: 'cyan' });
+// 🟢 Create Nodes (Spheres)
+const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const nodeGeometry = new THREE.SphereGeometry(1, 16, 16);
 
 for (let i = 0; i < numNodes; i++) {
@@ -50,13 +60,12 @@ for (let i = 0; i < numNodes; i++) {
   scene.add(node);
 }
 
-// Create Connections (Lines) - Connect nearby nodes
-const edgeMaterial = new THREE.LineBasicMaterial({ color: 'lightblue' });
+// 🔗 Create More Connections (Lines)
+const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 
 for (let i = 0; i < numNodes; i++) {
   for (let j = i + 1; j < numNodes; j++) {
-    if (nodes[i].position.distanceTo(nodes[j].position) < 20) {
-      // Only connect nearby nodes
+    if (nodes[i].position.distanceTo(nodes[j].position) < connectionDistance) {
       const points = [nodes[i].position, nodes[j].position];
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       const line = new THREE.Line(geometry, edgeMaterial);
@@ -66,33 +75,23 @@ for (let i = 0; i < numNodes; i++) {
   }
 }
 
-// Blur effect
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight),
-  10.5,
-  10.4,
-  10.85
-);
-composer.addPass(bloomPass);
-
-// Animation Loop
+// 🎥 Animation Loop
 function animate() {
   requestAnimationFrame(animate);
 
   // Rotate the network
-  scene.rotation.y += 0.001;
+  scene.rotation.y += 0.002;
 
-  composer.render(scene, camera);
+  // Rotate Earth in the opposite direction
+  earth.rotation.y -= 0.002;
+
+  renderer.render(scene, camera);
 }
 animate();
 
-// Resize Handling
+// 🖥 Handle Resizing
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
-  composer.setSize(window.innerWidth, window.innerHeight);
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
