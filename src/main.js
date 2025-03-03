@@ -20,7 +20,7 @@ camera.position.set(0, 0, 50);
 // 🌍 Create the Earth Sphere
 const earthTexture = new THREE.TextureLoader().load("earth.jpg"); // Ensure the image is in the same directory
 const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
-const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+const earthGeometry = new THREE.SphereGeometry(15, 32, 32);
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 scene.add(earth);
 
@@ -31,7 +31,7 @@ directionalLight.position.set(5, 5, 5);
 scene.add(ambientLight, directionalLight);
 
 // 🕸 Create Nodes & Connections
-const numNodes = 50;
+const numNodes = 100;
 const sphereRadius = 20;
 const connectionDistance = 15;
 const nodes = [];
@@ -49,7 +49,7 @@ function getSpherePosition(radius) {
 }
 
 // 🟢 Create Nodes (Spheres)
-const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const nodeMaterial = new THREE.MeshBasicMaterial({ color: "cyan" });
 const nodeGeometry = new THREE.SphereGeometry(1, 16, 16);
 
 for (let i = 0; i < numNodes; i++) {
