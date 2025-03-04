@@ -18,10 +18,11 @@ const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 0, 50);
 
 // 🌍 Create the Earth Sphere
-const earthTexture = new THREE.TextureLoader().load("earth.jpg"); // Ensure the image is in the same directory
+const earthTexture = new THREE.TextureLoader().load("./world.png");
 const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
-const earthGeometry = new THREE.SphereGeometry(15, 32, 32);
+const earthGeometry = new THREE.SphereGeometry(18, 32, 32);
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+earth.rotation.z = THREE.MathUtils.degToRad(23.5)
 scene.add(earth);
 
 // 🌟 Lighting for the Earth
@@ -31,9 +32,9 @@ directionalLight.position.set(5, 5, 5);
 scene.add(ambientLight, directionalLight);
 
 // 🕸 Create Nodes & Connections
-const numNodes = 100;
+const numNodes = 150;
 const sphereRadius = 20;
-const connectionDistance = 15;
+const connectionDistance = 13;
 const nodes = [];
 const edges = [];
 
@@ -50,7 +51,7 @@ function getSpherePosition(radius) {
 
 // 🟢 Create Nodes (Spheres)
 const nodeMaterial = new THREE.MeshBasicMaterial({ color: "cyan" });
-const nodeGeometry = new THREE.SphereGeometry(1, 16, 16);
+const nodeGeometry = new THREE.SphereGeometry(.5, 16, 16);
 
 for (let i = 0; i < numNodes; i++) {
   const position = getSpherePosition(sphereRadius);
@@ -61,7 +62,7 @@ for (let i = 0; i < numNodes; i++) {
 }
 
 // 🔗 Create More Connections (Lines)
-const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+const edgeMaterial = new THREE.LineBasicMaterial({ color: "grey" });
 
 for (let i = 0; i < numNodes; i++) {
   for (let j = i + 1; j < numNodes; j++) {
@@ -80,10 +81,10 @@ function animate() {
   requestAnimationFrame(animate);
 
   // Rotate the network
-  scene.rotation.y += 0.002;
+  scene.rotation.y += 0.0001;
 
   // Rotate Earth in the opposite direction
-  earth.rotation.y -= 0.002;
+  earth.rotation.y += 0.0005;
 
   renderer.render(scene, camera);
 }
