@@ -18,32 +18,32 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 0, 50);
 
-// 🌍 Earth
+// Earth
 const earthTexture = new THREE.TextureLoader().load("./world.png");
 const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
 const earthGeometry = new THREE.SphereGeometry(18, 64, 64);
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-earth.rotation.z = THREE.MathUtils.degToRad(23.5); // Correct axial tilt
+earth.rotation.z = THREE.MathUtils.degToRad(23.5); 
 
-// 🌐 Network Group (Container for nodes & edges)
+// Network Group (Container for nodes & edges)
 const networkGroup = new THREE.Group();
 scene.add(earth);
 scene.add(networkGroup);
 
-// 🌟 Lighting
+// Lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 5, 5);
 scene.add(ambientLight, directionalLight);
 
-// 🕸 Create Nodes & Connections
+// Create Nodes & Connections
 const numNodes = 150;
 const sphereRadius = 22;
 const connectionDistance = 10;
 const nodes = [];
 const edges = [];
 
-// 🎨 Node Styling
+// Node Styling
 const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x66ccff });
 const nodeGeometry = new THREE.SphereGeometry(0.5, 16, 16);
 
@@ -58,7 +58,7 @@ function getSpherePosition(radius) {
   );
 }
 
-// 🟢 Create Nodes (Spheres)
+// Create Nodes (Spheres)
 for (let i = 0; i < numNodes; i++) {
   const position = getSpherePosition(sphereRadius);
   const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -67,7 +67,7 @@ for (let i = 0; i < numNodes; i++) {
   networkGroup.add(node);
 }
 
-// 🔗 Create Connections (Lines)
+// Create Connections (Lines)
 const edgeMaterial = new THREE.LineBasicMaterial({ color: "white" });
 
 for (let i = 0; i < numNodes; i++) {
@@ -82,17 +82,17 @@ for (let i = 0; i < numNodes; i++) {
   }
 }
 
-// 🎥 Animation Loop
+// Animation Loop
 function animate() {
   requestAnimationFrame(animate);
 
-  // 🌍 Rotate Earth on its proper axis (counterclockwise)
+  // Rotate Earth on its proper axis (counterclockwise)
   earth.rotation.y -= 0.001;
 
-  // 🌐 Rotate network sphere around Earth
+  // Rotate network sphere around Earth
   networkGroup.rotation.y += 0.0008;
 
-  // 🫧 Add subtle pulsation effect to nodes
+  // Add subtle pulsation effect to nodes
   nodes.forEach((node, index) => {
     node.scale.setScalar(1 + 0.05 * Math.sin(Date.now() * 0.002 + index));
   });
@@ -101,7 +101,7 @@ function animate() {
 }
 animate();
 
-// 🖥 Handle Resizing
+// Handle Resizing
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.aspect = window.innerWidth / window.innerHeight;
